@@ -120,6 +120,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showUsers() {
+        binding.llUsers.removeAllViews()
         for (user in users) {
             var tvUser = TextView(this)
             var param = LinearLayout.LayoutParams(
