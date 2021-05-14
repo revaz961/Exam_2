@@ -126,7 +126,7 @@ class MainActivity : AppCompatActivity() {
             )
             tvUser.text = user.toString()
             tvUser.layoutParams = param
-            binding.svUsers.addView(tvUser)
+            binding.llUsers.addView(tvUser)
         }
     }
 }
