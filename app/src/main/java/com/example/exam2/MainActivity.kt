@@ -10,7 +10,7 @@ import com.example.exam2.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private val emailPattern = ""
+    private val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
     private lateinit var users: MutableSet<User>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,9 +18,11 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        init()
     }
 
     private fun init() {
+        users = mutableSetOf()
 
         binding.btnAddUser.setOnClickListener {
             createUser()
@@ -53,7 +55,7 @@ class MainActivity : AppCompatActivity() {
             binding.etSecondName.setBackgroundResource(R.color.red)
         }
 
-        if (binding.etEmail.text.matches(emailPattern.toRegex())) {
+        if (binding.etEmail.text.trim().matches(emailPattern.toRegex())) {
             email = binding.etEmail.text.toString()
             binding.etEmail.setBackgroundResource(R.color.green)
         } else {
