@@ -4,78 +4,121 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@color/dark">
     <ScrollView
         android:id="@+id/svUsers"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="300dp"
+        android:maxHeight="300dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/etFirstName">
+        app:layout_constraintBottom_toTopOf="@id/etFirstName"
+        app:layout_constraintVertical_chainStyle="spread_inside"
+        app:layout_constraintVertical_bias="0"
+        android:background="@color/lightDark">
 
         <LinearLayout
             android:id="@+id/llUsers"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Users:"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="20sp"/>
+
+        </LinearLayout>
     </ScrollView>
 
     <EditText
         android:id="@+id/etFirstName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:ems="10"
+        android:lines="1"
+        android:textSize="16sp"
         android:hint="First Name:"
+        android:textColor="@color/textColor"
+        android:textColorHint="@color/hintColor"
         app:layout_constraintTop_toBottomOf="@id/svUsers"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/etSecondName"
+        android:layout_margin="2dp"
         />
 
     <EditText
         android:id="@+id/etSecondName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:ems="10"
+        android:lines="1"
+        android:textColor="@color/textColor"
+        android:textColorHint="@color/hintColor"
+        android:textSize="16sp"
         android:hint="Second Name:"
         app:layout_constraintTop_toBottomOf="@id/etFirstName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/etAge"
+        android:layout_margin="2dp"
         />
 
     <EditText
         android:id="@+id/etAge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:ems="10"
+        android:lines="1"
+        android:textColor="@color/textColor"
+        android:textColorHint="@color/hintColor"
+        android:textSize="16sp"
         android:hint="Age:"
         android:inputType="number"
         app:layout_constraintTop_toBottomOf="@id/etSecondName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/etEmail"
+        android:layout_margin="2dp"
         />
 
     <EditText
         android:id="@+id/etEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:ems="10"
         android:hint="Email:"
         android:inputType="textEmailAddress"
-        app:layout_constraintTop_toBottomOf="@id/etAge"
+        android:lines="1"
+        android:textAlignment="center"
+        android:textColor="@color/textColor"
+        android:textColorHint="@color/hintColor"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/btnRemove"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@id/etAge"
+        android:layout_margin="2dp"/>
 
     <Button
         android:id="@+id/btnAddUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add User"
-        app:layout_constraintTop_toBottomOf="@id/etEmail"
+        android:text="Add"
+        app:layout_constraintTop_toTopOf="@id/btnRemove"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btnRemove"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/btnRemove"
 
         />
 
@@ -83,23 +126,23 @@
         android:id="@+id/btnRemove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="remove User"
+        android:text="remove"
         app:layout_constraintTop_toBottomOf="@id/etEmail"
         app:layout_constraintStart_toEndOf="@id/btnAddUser"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btnUpdate"
+        android:layout_marginBottom="10dp"
         />
 
     <Button
         android:id="@+id/btnUpdate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="update user"
-        app:layout_constraintTop_toBottomOf="@id/etEmail"
+        android:text="update"
+        app:layout_constraintTop_toTopOf="@id/btnRemove"
         app:layout_constraintStart_toEndOf="@id/btnRemove"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/btnRemove"
 
         />
 
