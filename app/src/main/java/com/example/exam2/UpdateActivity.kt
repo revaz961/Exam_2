@@ -1,5 +1,6 @@
 package com.example.exam2
 
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputType
@@ -17,6 +18,8 @@ import com.google.android.material.snackbar.Snackbar
 class UpdateActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var binding: ActivityUpdateBinding
     private lateinit var users: HashMap<Int, User>
+    private var activeUserId: Int = -1
+    private val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,26 +30,50 @@ class UpdateActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun init() {
+        binding.btnSave.setOnClickListener(this)
         users = intent.getSerializableExtra("users") as HashMap<Int, User>
         addUsers()
     }
 
-    private fun addUsers() {
-        users.forEach {
-            setUserList(it.key, it.value)
-//            setUser(it.key, it.value)
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            in users.keys -> {
+                if (activeUserId != v?.id)
+                    modifyUser(v?.id as Int)
+            }
+            R.id.btnSave -> d("click", (v as TextView).text.toString())
         }
+    }
 
+    private fun modifyUser(id: Int){
+        if(validateUser()) {
+            users[activeUserId]!!.firstName = binding.etFirstName.text.trim().toString()
+            users[activeUserId]!!.secondName = binding.etSecondName.text.trim().toString()
+            users[activeUserId]!!.age = binding.etAge.text.trim().toString().toInt()
+            users[activeUserId]!!.email = binding.etEmail.text.trim().toString()
+            activeUserId = id
+            setUser(activeUserId, users[activeUserId] as User)
+        }
+    }
+
+
+    private fun addUsers() {
+        users.forEach { setUserList(it.key, it.value) }
+        activeUserId = users.keys.first()
+        setUser(activeUserId, users[activeUserId] as User)
+        binding.tvUser.text = "Users(${users.size})"
     }
 
     private fun setUser(id: Int, user: User) {
-        setField("Firstname", user.firstName, id)
-        setField("Secondname", user.secondName, id)
-        setField("Age", user.age.toString(), id, InputType.TYPE_CLASS_NUMBER)
-        setField(
-            "Email", user.email, id,
-            InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
-        )
+        activeUserId = id
+        binding.etFirstName.setBackgroundResource(R.color.lightDark)
+        binding.etSecondName.setBackgroundResource(R.color.lightDark)
+        binding.etEmail.setBackgroundResource(R.color.lightDark)
+        binding.etAge.setBackgroundResource(R.color.lightDark)
+        binding.etFirstName.setText(user.firstName)
+        binding.etSecondName.setText(user.secondName)
+        binding.etAge.setText(user.age.toString())
+        binding.etEmail.setText(user.email)
     }
 
     private fun setUserList(id: Int, user: User) {
@@ -57,6 +84,7 @@ class UpdateActivity : AppCompatActivity(), View.OnClickListener {
         )
         tvUserItem.id = id
         tvUserItem.isClickable = true
+        tvUserItem.setOnClickListener(this)
         tvUserItem.text = user.firstName
         tvUserItem.setTextColor(ContextCompat.getColor(this, R.color.textColor))
         tvUserItem.setBackgroundColor(ContextCompat.getColor(this, R.color.fieldColor))
@@ -68,19 +96,33 @@ class UpdateActivity : AppCompatActivity(), View.OnClickListener {
         binding.llUserList.addView(tvUserItem)
     }
 
-    private fun setField(
-        field: String, text: String, id: Int,
-        inputType: Int = InputType.TYPE_CLASS_TEXT
-    ) {
+    private fun validateUser(): Boolean {
+        var valid = true
+        binding.etFirstName.setBackgroundResource(R.color.green)
+        binding.etSecondName.setBackgroundResource(R.color.green)
+        binding.etEmail.setBackgroundResource(R.color.green)
+        binding.etAge.setBackgroundResource(R.color.green)
 
-    }
-
-    override fun onClick(v: View?) {
-        d("click",(v as TextView).text.toString())
-        when(v?.id){
-            in users.keys -> d("click",(v as TextView).text.toString())
-            R.id.btnSave -> d("click",(v as TextView).text.toString())
-            else -> d("click", "some click")
+        if (binding.etFirstName.text.trim().isEmpty()) {
+            binding.etFirstName.setBackgroundResource(R.color.red)
+            valid = false
         }
+        if (binding.etSecondName.text.trim().isEmpty()) {
+            binding.etSecondName.setBackgroundResource(R.color.red)
+            valid = false
+        }
+        if (!binding.etEmail.text.trim().matches(emailPattern.toRegex())) {
+            binding.etEmail.setBackgroundResource(R.color.red)
+            valid = false
+        }
+        if (binding.etAge.text.trim().isEmpty()
+            || binding.etAge.text.trim().toString().toInt() < 0
+            || binding.etAge.text.trim().toString().toInt() > 150
+        ) {
+            binding.etAge.setBackgroundResource(R.color.red)
+            valid = false
+        }
+        return valid
     }
+
 }

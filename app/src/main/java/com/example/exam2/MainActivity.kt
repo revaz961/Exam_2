@@ -12,6 +12,9 @@ import androidx.core.view.*
 import com.example.exam2.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    companion object{
+        const val REQUES_ACCES_TYPE = 1
+    }
     private lateinit var binding: ActivityMainBinding
     private val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
     private lateinit var users: HashMap<Int, User>
@@ -22,6 +25,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         init()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun init() {
@@ -141,7 +148,7 @@ class MainActivity : AppCompatActivity() {
         if (checkedUserMap.isNotEmpty()) {
             val intent = Intent(this, UpdateActivity::class.java)
             intent.putExtra("users", checkedUserMap)
-            startActivity(intent)
+            startActivityForResult(intent,MainActivity.REQUES_ACCES_TYPE)
         }
     }
 

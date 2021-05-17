@@ -14,7 +14,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="Update Users:"
+        android:text="@string/update_users"
         android:textSize="25sp"
         android:textColor="@color/textColor"
         app:layout_constraintVertical_bias="0.01"/>
@@ -29,6 +29,8 @@
         android:textColorHint="@color/hintColor"
         android:textColor="@color/textColor"
         android:hint="@string/first_name"
+        android:background="@color/lightDark"
+        android:textAlignment="center"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,6 +47,8 @@
         android:textColorHint="@color/hintColor"
         android:textColor="@color/textColor"
         android:hint="@string/second_name"
+        android:background="@color/lightDark"
+        android:textAlignment="center"
         app:layout_constraintTop_toBottomOf="@id/etFirstName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -61,6 +65,8 @@
         android:textColorHint="@color/hintColor"
         android:textColor="@color/textColor"
         android:hint="@string/age"
+        android:background="@color/lightDark"
+        android:textAlignment="center"
         app:layout_constraintTop_toBottomOf="@id/etSecondName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -76,11 +82,13 @@
         android:textColorHint="@color/hintColor"
         android:textColor="@color/textColor"
         android:hint="@string/email"
+        android:background="@color/lightDark"
+        android:textAlignment="center"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.7"
+        app:layout_constraintVertical_bias="0.6"
         />
 
     <HorizontalScrollView
@@ -103,9 +111,10 @@
             android:layout_margin="10dp">
 
             <TextView
+                android:id="@+id/tvUser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Users:"
+                android:text="@string/users"
                 android:textColor="@color/textColor"
                 android:textSize="20sp"
                 android:layout_marginRight="10dp"
