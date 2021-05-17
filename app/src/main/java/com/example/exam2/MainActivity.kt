@@ -1,5 +1,6 @@
 package com.example.exam2
 
+
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,9 +14,7 @@ import com.example.exam2.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
-    private lateinit var users: MutableSet<User>
-    private lateinit var checked: MutableList<View>
-    private var activeUpdate = false
+    private lateinit var users: HashMap<Int, User>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,14 +25,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        users = mutableSetOf(
-            User("rezi", "giorgadze", "revaz961@gmail.com", 24),
-            User("robi", "giorgadze", "revaz961@gmail.com", 18),
-            User("lali", "giorgadze", "revaz961@gmail.com", 26),
-            User("natia", "giorgadze", "revaz961@gmail.com", 28),
-            User("giorgi", "wiklauri", "revaz961@gmail.com", 30),
-            User("xatuna", "giorgadze", "revaz961@gmail.com", 50),
-            User("gela", "giorgadze", "revaz961@gmail.com", 55)
+        val rezi = User("rezi", "giorgadze", "revaz961@gmail.com", 24)
+        val robi = User("robi", "giorgadze", "robi961@gmail.com", 18)
+        val laluka = User("laliuka", "giorgadze", "laluka@gmail.com", 26)
+        val natia = User("natia", "giorgadze", "natia@gmail.com", 28)
+        val giorgi = User("giorgi", "wiklauri", "revaz961@gmail.com", 30)
+        val xatuna = User("xatuna", "giorgadze", "revaz961@gmail.com", 50)
+        val gela = User("gela", "giorgadze", "revaz961@gmail.com", 55)
+        users = hashMapOf(
+            rezi.id to rezi,
+            robi.id to robi,
+            laluka.id to laluka,
+            natia.id to natia,
+            giorgi.id to giorgi,
+            xatuna.id to xatuna,
+            gela.id to gela
         )
 
         showUsers()
@@ -47,85 +53,62 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnUpdate.setOnClickListener {
-            checked = binding.llUsers.children.filter {
-                it is CheckBox && it.isChecked
-            }.toMutableList()
-
-            if (checked.isNotEmpty()) {
-                binding.btnAddUser.isClickable = false
-                binding.btnRemove.isClickable = false
-                binding.btnUpdate.text = "Save(${checked.size})"
-                setUserForUpdate(checked[0])
-                updateUser(checked[0])
-            } else {
-                binding.btnAddUser.isClickable = true
-                binding.btnRemove.isClickable = true
-                binding.btnUpdate.text = "Update"
-                Toast.makeText(this, "Please check user", Toast.LENGTH_LONG).show()
-            }
-
+            updateUser()
         }
     }
 
-
     private fun createUser() {
-        if (validateUser()) {
-            val user = User(
-                binding.etFirstName.text.toString(),
-                binding.etSecondName.text.toString(),
-                binding.etEmail.text.toString(),
-                binding.etAge.text.toString().toInt()
-            )
-            if (users.contains(user))
-                Toast.makeText(this, "User already exist", Toast.LENGTH_LONG).show()
-            else {
-                users.add(user)
-                addUser(user)
-            }
-        } else
+        if (!validateUser()) {
             Toast.makeText(this, "User not valid", Toast.LENGTH_LONG).show()
+            return
+        }
+        val user = User(
+            binding.etFirstName.text.trim().toString(),
+            binding.etSecondName.text.trim().toString(),
+            binding.etEmail.text.trim().toString(),
+            binding.etAge.text.trim().toString().toInt()
+        )
+        if (users.values.contains(user))
+            Toast.makeText(this, "User already exist", Toast.LENGTH_LONG).show()
+        else {
+            users[user.id] = user
+            addUser(user)
+            binding.users.text = "Users(${users.size}):"
+        }
     }
 
     private fun validateUser(): Boolean {
         var valid = true
+        binding.etFirstName.setBackgroundResource(R.color.green)
+        binding.etSecondName.setBackgroundResource(R.color.green)
+        binding.etEmail.setBackgroundResource(R.color.green)
+        binding.etAge.setBackgroundResource(R.color.green)
 
-        if (binding.etFirstName.text.isNotEmpty())
-            binding.etFirstName.setBackgroundResource(R.color.green)
-        else {
+        if (binding.etFirstName.text.trim().isEmpty()) {
             binding.etFirstName.setBackgroundResource(R.color.red)
             valid = false
         }
-
-        if (binding.etSecondName.text.isNotEmpty())
-            binding.etSecondName.setBackgroundResource(R.color.green)
-        else {
+        if (binding.etSecondName.text.trim().isEmpty()) {
             binding.etSecondName.setBackgroundResource(R.color.red)
             valid = false
         }
-
-        if (binding.etEmail.text.trim().matches(emailPattern.toRegex()))
-            binding.etEmail.setBackgroundResource(R.color.green)
-        else {
+        if (!binding.etEmail.text.trim().matches(emailPattern.toRegex())) {
             binding.etEmail.setBackgroundResource(R.color.red)
             valid = false
         }
-
-        if (binding.etAge.text.isNotEmpty()
-            && binding.etAge.text.toString().toInt() > 0
-            && binding.etAge.text.toString().toInt() < 150
-        )
-            binding.etAge.setBackgroundResource(R.color.green)
-        else {
+        if (binding.etAge.text.trim().isEmpty()
+            || binding.etAge.text.trim().toString().toInt() < 0
+            || binding.etAge.text.trim().toString().toInt() > 150
+        ) {
             binding.etAge.setBackgroundResource(R.color.red)
             valid = false
         }
-
         return valid
     }
 
     private fun addUser(user: User) {
-        var checkBox = CheckBox(this)
-        var param = LinearLayout.LayoutParams(
+        val checkBox = CheckBox(this)
+        val param = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
@@ -134,7 +117,7 @@ class MainActivity : AppCompatActivity() {
         checkBox.text = "$firstName $secondName $age years old $email"
         checkBox.setTextColor(ContextCompat.getColor(this, R.color.textColor))
         checkBox.setBackgroundColor(ContextCompat.getColor(this, R.color.fieldColor))
-        checkBox.textSize = 15.0f
+        checkBox.textSize = 20.0f
         checkBox.textAlignment = View.TEXT_ALIGNMENT_CENTER
         checkBox.setPadding(5)
         param.setMargins(5)
@@ -144,49 +127,29 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun deleteUser() {
-
-        val deletedUsers = mutableListOf<CheckBox>()
         binding.llUsers.children.forEach {
-            if (it is CheckBox && it.isChecked) {
-                users.remove(
-                    users.find { user ->
-                        user.id == it.id
-                    })
-                binding.llUsers.removeView(it)
-            }
+            if (it is CheckBox && it.isChecked)
+                users.remove(it.id)
         }
+        showUsers()
     }
 
-    private fun updateUser(checkBox: View) {
-
-    }
-
-    private fun setUserForUpdate(checkBox: View) {
-//        val user = users.find { it.id == checkBox.id } as User
-//        binding.etFirstName.setText(user.firstName)
-//        binding.etSecondName.setText(user.secondName)
-//        binding.etEmail.setText(user.email)
-//        binding.etAge.setText(user.age)
+    private fun updateUser() {
+        val checkedUser =
+            binding.llUsers.children.filter { it is CheckBox && it.isChecked }.map { it.id }
+        val checkedUserMap = users.filter{it.key in checkedUser} as HashMap<Int,User>
+        if (checkedUserMap.isNotEmpty()) {
+            val intent = Intent(this, UpdateActivity::class.java)
+            intent.putExtra("users", checkedUserMap)
+            startActivity(intent)
+        }
     }
 
     private fun showUsers() {
-        for (user in users) {
-            var checkBox = CheckBox(this)
-            var param = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            val (firstName, secondName, email, age) = user
-            checkBox.id = user.id
-            checkBox.text = "$firstName $secondName $age years old $email"
-            checkBox.setTextColor(ContextCompat.getColor(this, R.color.textColor))
-            checkBox.setBackgroundColor(ContextCompat.getColor(this, R.color.fieldColor))
-            checkBox.textSize = 15.0f
-            checkBox.textAlignment = View.TEXT_ALIGNMENT_CENTER
-            checkBox.setPadding(5)
-            param.setMargins(5)
-            checkBox.layoutParams = param
-            binding.llUsers.addView(checkBox)
+        binding.llUsers.removeAllViews()
+        users.forEach {
+            addUser(it.value)
         }
+        binding.users.text = "Users(${users.size})"
     }
 }
