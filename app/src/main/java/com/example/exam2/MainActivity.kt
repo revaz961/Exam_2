@@ -4,7 +4,6 @@ package com.example.exam2
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log.d
 import android.view.View
 import android.widget.*
 import androidx.core.content.ContextCompat
@@ -13,7 +12,8 @@ import com.example.exam2.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     companion object{
-        const val REQUES_ACCES_TYPE = 1
+        const val REQUEST_ACCESS_TYPE = 1
+        const val ACCES_MESSAGE = "ACCESS_MESSAGE"
     }
     private lateinit var binding: ActivityMainBinding
     private val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
@@ -28,7 +28,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_ACCESS_TYPE) {
+            if (resultCode == RESULT_OK) {
+                val modifyUsers = data!!.getSerializableExtra(ACCES_MESSAGE) as HashMap<Int, User>
+                updateUsers(modifyUsers)
+            }
+            super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     private fun init() {
@@ -148,8 +154,20 @@ class MainActivity : AppCompatActivity() {
         if (checkedUserMap.isNotEmpty()) {
             val intent = Intent(this, UpdateActivity::class.java)
             intent.putExtra("users", checkedUserMap)
-            startActivityForResult(intent,MainActivity.REQUES_ACCES_TYPE)
+            startActivityForResult(intent,MainActivity.REQUEST_ACCESS_TYPE)
         }
+    }
+
+    private fun updateUsers(modifyUsers:HashMap<Int,User>){
+        users.forEach{
+            if(it.key in modifyUsers.keys){
+                it.value.firstName = modifyUsers[it.key]!!.firstName
+                it.value.secondName = modifyUsers[it.key]!!.secondName
+                it.value.age = modifyUsers[it.key]!!.age
+                it.value.email = modifyUsers[it.key]!!.email
+            }
+        }
+        showUsers()
     }
 
     private fun showUsers() {

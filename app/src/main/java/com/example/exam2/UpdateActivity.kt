@@ -1,5 +1,6 @@
 package com.example.exam2
 
+import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -35,13 +36,20 @@ class UpdateActivity : AppCompatActivity(), View.OnClickListener {
         addUsers()
     }
 
+
+
     override fun onClick(v: View?) {
         when (v?.id) {
             in users.keys -> {
                 if (activeUserId != v?.id)
                     modifyUser(v?.id as Int)
             }
-            R.id.btnSave -> d("click", (v as TextView).text.toString())
+            R.id.btnSave -> {
+                val intent = Intent()
+                intent.putExtra(MainActivity.ACCES_MESSAGE,users)
+                setResult(RESULT_OK,intent)
+                finish()
+            }
         }
     }
 
